@@ -1,0 +1,89 @@
+<view id="InspectionRecords">
+  <view class="header">
+    <ant-button type="primary" onTap="setlist_show" data-type="{{0}}">
+      日历
+    </ant-button>
+    <ant-button type="primary" onTap="setlist_show" data-type="{{1}}">
+      检查内容
+    </ant-button>
+    <ant-button type="primary">重置</ant-button>
+    <view a:if="{{ list_show === 0  }}" class="select-list">
+      <view class="date">
+        <view class="date-header">
+          <view a:if="{{ selectDate }}" class="date-header-item select-day">
+            {{selectDate.year}}年{{selectDate.month}}月{{selectDate.day}}日
+          </view>
+          <view a:elif="{{ !selectDate }}" class="date-header-item select-day">
+            请选择日期
+          </view>
+          <view class="date-header-item confirm">
+            确定
+          </view>
+        </view>
+        <view class="date-content">
+          <view a:for="{{['日', '一', '二', '三', '四', '五', '六'] }}" class="date-content-item worship">
+            {{item}}
+          </view>
+          <view
+            a:for="{{ dateList }}"
+            class="date-content-item day"
+            onTap="selectDay"
+            data-i="{{index}}"
+          >
+            {{item.day}}
+          </view>
+        </view>
+        <view class="date-bottom">
+          <view onTap="setMonth" data-type="-" style="color: rgba(25, 148, 255, 1)">
+            上一月
+          </view>
+          <view>
+            {{now_year_month[0]}}年{{now_year_month[1]}}月
+          </view>
+          <view onTap="setMonth" data-type="+" style="color: rgba(25, 148, 255, 1)">
+            下一月
+          </view>
+        </view>
+      </view>
+    </view>
+    <view a:if="{{ list_show === 1  }}" class="select-list-a">
+      <view
+        a:for="{{ list }}"
+        onTap="setSelectValue"
+        data-data="{{item}}"
+        a:key="index"
+        class="select-item"
+      >
+        {{item.text}}
+      </view>
+    </view>
+  </view>
+  <view class="content">
+    <scroll-view scroll-y="{{true}}" style="height: 100%;">
+      <view a:for="{{ 10 }}" class="card">
+        <view class="card-title">
+          <view class="card-title-text">
+            卫生检查
+          </view>
+          <view class="card-title-time">
+            2025-01-01   12:20:20
+          </view>
+        </view>
+        <view class="card-context">
+          文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述
+        </view>
+        <view class="card-imagelist">
+          <view class="card-imagelist-img">
+            <image a:for="{{ 4 }}" mode="scaleToFill" src="../../assets/icon_xcjl@3x.png" />
+          </view>
+          <ant-button class="card-imagelist-btn" type="text">查看</ant-button>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  <view class="bottom-card">
+    <ant-button type="primary" danger>
+      导出
+    </ant-button>
+  </view>
+</view>

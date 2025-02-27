@@ -1,0 +1,11 @@
+{
+  "defaultTitle": "首页",
+  "titleBarColor": "#5A61E8",
+  "navigationBarTitleText": "透明导航栏",
+  "navigationBarBackgroundColor": "rgba(0,0,0,0)",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "input-item": "antd-mini/es/Input/index",
+    "ant-button": "antd-mini/es/Button/index"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/InspectionContent/InspectionContent",
+    "pages/InspectionRecords/InspectionRecords"
+  ],
+  "window": {
+    "defaultTitle": "钉钉小程序"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "usingComponents": {
+    "ant-calendar": "antd-mini/es/Calendar/index",
+    "ant-tabs": "antd-mini/es/Tabs/index",
+    "ant-button": "antd-mini/es/Button/index",
+    "ant-tag": "antd-mini/es/Tag/index",
+    "ant-swipe-action": "antd-mini/es/SwipeAction/index",
+    "ant-dialog": "antd-mini/es/Dialog/index",
+    "ant-popover-list": "antd-mini/es/PopoverList/index"
+  }
+}

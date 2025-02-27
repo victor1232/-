@@ -1,0 +1,119 @@
+<view id="InspectionRecords">
+  <view class="header">
+    <ant-button
+      class="selectContent"
+      type="primary"
+      onTap="setlist_show"
+      icon="DownOutline"
+      data-type="{{1}}"
+    >
+      选择检查内容
+    </ant-button>
+    <ant-button type="primary">重置</ant-button>
+    <view a:if="{{ list_show === 0  }}" class="select-list">
+      <view class="date">
+        <view class="date-header">
+          <view a:if="{{ selectDate }}" class="date-header-item select-day">
+            {{selectDate.year}}年{{selectDate.month}}月{{selectDate.day}}日
+          </view>
+          <view a:elif="{{ !selectDate }}" class="date-header-item select-day">
+            请选择日期
+          </view>
+          <view class="date-header-item confirm">
+            确定
+          </view>
+        </view>
+        <view class="date-content">
+          <view a:for="{{['日', '一', '二', '三', '四', '五', '六'] }}" class="date-content-item worship">
+            {{item}}
+          </view>
+          <view
+            a:for="{{ dateList }}"
+            class="date-content-item day"
+            onTap="selectDay"
+            data-i="{{index}}"
+          >
+            {{item.day}}
+          </view>
+        </view>
+        <view class="date-bottom">
+          <view onTap="setMonth" data-type="-" style="color: rgba(25, 148, 255, 1)">
+            上一月
+          </view>
+          <view>
+            {{now_year_month[0]}}年{{now_year_month[1]}}月
+          </view>
+          <view onTap="setMonth" data-type="+" style="color: rgba(25, 148, 255, 1)">
+            下一月
+          </view>
+        </view>
+      </view>
+    </view>
+    <view a:if="{{ list_show === 1  }}" class="select-list-a">
+      <view
+        a:for="{{ list }}"
+        onTap="setSelectValue"
+        data-data="{{item}}"
+        a:key="index"
+        class="select-item"
+      >
+        {{item.text}}
+      </view>
+    </view>
+  </view>
+  <view class="content">
+    <scroll-view scroll-y="{{true}}" style="height: 100%;">
+      <view a:for="{{ 10 }}" class="card">
+
+        <view class="card-title">
+          <view class="card-title-text" style="width:70%">
+            卫生检查
+            <ant-tag color="danger" class="card-title-text-tag">随机</ant-tag>
+          </view>
+          <ant-swipe-action
+            data-item="{{index}}"
+            rightButtons="{{leftBtns}}"
+            elasticity="{{true}}"
+            swiped="{{swipeIndex === index}}"
+            bindswipeend="onSwipeEnd"
+            bindswipestart="onSwipeStart"
+            bindbuttontap="onButtonTap"
+          >
+            <view class="card-title-time" onTap="aaa">
+              <image mode="scaleToFill" src="../../assets/icon_general／download@3x.png" />
+            </view>
+          </ant-swipe-action>
+        </view>
+        <view class="card-context">
+          文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  <view class="bottom-card">
+    <ant-button type="primary" danger>
+      新增
+    </ant-button>
+  </view>
+
+  <ant-dialog title="新增巡查内容" visible="{{slotWeakVisible}}">
+    <view slot="content" class="activity-dialog-footer">
+      <view class="activity-dialog-content" bindtap="onClickActivityModalButton">
+        <ant-popover-list
+          placement="bottom-right"
+          visible="{{visible}}"
+          list="{{list}}"
+          onTapItem="handleTapItem"
+          style="padding-top: 20px;margin: 0 20px;background-color:#FFF"
+          bindvisiblechange="handleVisibleChange"
+        >
+          <ant-button onTap="handleVisibleChange" inline>点我</ant-button>
+        </ant-popover-list>
+      </view>
+    </view>
+    <view slot="footer" class="activity-dialog-footer">
+      <ant-button type="primary" onTap="handleClose">取消</ant-button>
+      <ant-button type="primary" onTap="handleClose">保存</ant-button>
+    </view>
+  </ant-dialog>
+</view>

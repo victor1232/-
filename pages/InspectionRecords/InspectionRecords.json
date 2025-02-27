@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "ant-calendar": "antd-mini/es/Calendar/index",
+    "ant-tabs": "antd-mini/es/Tabs/index",
+    "ant-button": "antd-mini/es/Button/index"
+  }
+}

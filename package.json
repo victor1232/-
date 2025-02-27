@@ -1,0 +1,14 @@
+{
+  "name": "keshan-mini",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "antd-mini": "^3.1.6"
+  }
+}
