@@ -1,3 +1,4 @@
+const app = getApp();
 Page({
   data: {
     monthRange: [1, 12],
@@ -12,20 +13,24 @@ Page({
       { id: 4, text: "柯城消防大队" },
     ]
   },
-  setlist_show({ target: { dataset: { type } } }) {
+  onLoad() {
+    this.setData({ dateList: this.generateCalendarData(2025, 2) });
+    this.getRecordList()
+  },
+  setlist_show({ target: { dataset: { type } } }) { // 显示隐藏下拉框
     console.log(type)
     if (this.data.list_show === 0 || this.data.list_show === 1) return this.setData({ list_show: null })
     this.setData({ list_show: type })
   },
-  generateCalendarData(year, month) {
+  generateCalendarData(year, month) { // 生成日历数组
     const daysInMonth = new Date(year, month, 0).getDate(); // 本月天数
     const firstDayOfMonth = new Date(year, month - 1, 1).getDay(); // 本月第一天是星期几
     const prevMonthDays = new Date(year, month - 2, 0).getDate(); // 上个月天数
     let nextMonthDays = 0; // 下个月天数，初始化为0，后面根据需要计算
     let calendarData = []; // 初始化结果数组
-
+    let lastarr = [];
     // 填充上个月的日期
-    for (let i = firstDayOfMonth - 1; i >= 0 && calendarData.length < 35; i--) {
+    for (let i = firstDayOfMonth - 1; i >= 0; i--) {
       calendarData.unshift({
         year: year,
         month: month - 1,
@@ -33,7 +38,6 @@ Page({
         isCurrentMonth: false
       });
     }
-
     // 填充本月的日期
     for (let i = 1; i <= daysInMonth && calendarData.length < 35; i++) {
       calendarData.push({
@@ -43,7 +47,6 @@ Page({
         isCurrentMonth: true
       });
     }
-
     // 如果还没凑满35条，继续填充下个月的日期
     if (calendarData.length < 35) {
       const nextMonth = new Date(year, month, 1);
@@ -52,26 +55,22 @@ Page({
         nextMonthDays++;
         calendarData.push({
           year: nextMonth.getFullYear(),
-          month: nextMonth.getMonth() + 1, // 月份从0开始，所以要加1
+          month: nextMonth.getMonth(), // 月份从0开始，所以要加1
           day: nextMonthDays,
           isCurrentMonth: false
         });
         nextMonth.setDate(nextMonth.getDate() + 1); // 日期递增
       }
-      // 注意：这里我们可能多计算了一些下个月的日期，但因为只需要35条，所以超出部分会被忽略
     }
-
-    // 截断数组以确保只有35条数据（虽然上面的逻辑已经保证了这一点，但这是一个额外的安全措施）
     calendarData = calendarData.slice(0, 35);
-
     return calendarData;
   },
-  selectDay({ target: { dataset: { i } } }) {
+  selectDay({ target: { dataset: { i } } }) { // 选择日期
     const data = this.data.dateList.find((item, index) => index === i)
     console.log(data)
     this.setData({ selectDate: data })
   },
-  setMonth({ target: { dataset: { type } } }) {
+  setMonth({ target: { dataset: { type } } }) { // 设置月份
     let year = this.data.now_year_month[0];
     let month = this.data.now_year_month[1];
     if (type === "+") {
@@ -93,7 +92,23 @@ Page({
     this.setData({ now_year_month: [year, month] })
     this.setData({ dateList: this.generateCalendarData(this.data.now_year_month[0], this.data.now_year_month[1]) })
   },
-  onLoad() {
-    this.setData({ dateList: this.generateCalendarData(2025, 2) })
-  },
+  getRecordList() {
+    console.log(app.globalData.unionid)
+    dd.httpRequest({
+      url: 'http://123.157.97.116:8093/ks-inspection/sys/ksInspectionBackend/recording/query',
+      method: 'POST',
+      headers: {
+        unionid: app.globalData.unionid
+      },
+      data: {
+        content: "",
+        time: ""
+      },
+      success: (res) => {
+        const { data, status, headers } = res;
+        console.log(data)
+        // this.setData({ cardList: data.data })
+      },
+    })
+  }
 });

@@ -2,10 +2,24 @@ App({
   globalData: {
     unionid: null
   },
+  eventBus: { // eventBus
+    events: {},
+    on(eventName, callback) {
+      if (!this.events[eventName]) this.events[eventName] = [];
+      this.events[eventName].push(callback);
+    },
+    off(eventName) {
+      if (this.events[eventName]) {
+        this.events[eventName] = null;
+      }
+    },
+    emit(eventName, data) {
+      if (this.events[eventName]) {
+        this.events[eventName].forEach(cb => cb(data));
+      }
+    }
+  },
   async onLaunch(options) {
-    console.log('App onLaunch');
-    console.log(this);
-    // 进入生命周期
     await dd.httpRequest({ // 获取应用凭证 access_token 
       data: {
         appkey: "dingxfk2battcebh67jg",
@@ -19,22 +33,17 @@ App({
           key: 'access_token',
           data: data.access_token,
         });
-        console.log(data.access_token, this, "from httpRequest")
       }
     });
     // 存储应用凭证
     const access_token = dd.getStorageSync({ key: 'access_token' }).data;
-    console.log(access_token, "from getStorageSync 获取应用凭证")
     let authCode = null
-    // 获取免登录授权
-    await dd.getAuthCode({
+    await dd.getAuthCode({ // 获取免登录授权
       success: function (res) {
         authCode = res.authCode
       },
     });
-    console.log(authCode, "from getAuthCode 获取免登录授权码")
-    // 获取用户信息
-    await dd.httpRequest({
+    await dd.httpRequest({ // 获取用户信息
       data: {
         access_token,
         code: authCode
@@ -43,27 +52,9 @@ App({
       url: 'https://oapi.dingtalk.com/topapi/v2/user/getuserinfo',
       success: (res) => {
         const { headers, data, status } = res;
-        console.log(res, this.globalData.unionid, "from httpRequest 获取用户信息")
         this.globalData.unionid = data.result.unionid
+        this.eventBus.emit('getUnionid', { data: data.result.unionid });
       }
     })
-    // 初始化首页 请求今日巡查
-    console.log("请求今日巡查", this.globalData)
-    await dd.httpRequest({
-      headers: {
-        unionid: this.globalData.unionid
-      },
-      url: 'http://123.157.97.116:8093/ks-inspection/sys/ksInspectionTag/getTodayContent',
-      method: 'GET',
-      success: (res) => {
-        const { data, status, headers } = res;
-        console.log(res)
-      },
-    })
-  },
-  onShow(options) {
-    // 从后台被 scheme 重新打开
-    // options.query == {number:1}
-    console.log("show");
-  },
+  }
 });

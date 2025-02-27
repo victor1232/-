@@ -19,29 +19,13 @@
   </view>
   <view class="content">
     <view a:if="{{ pageType === 0 }}" class="card">
-      <view class="text-item">
-        <view class="title">今日巡查人：</view>
-        <view class="context">张三</view>
-      </view>
-      <view class="text-item">
-        <view class="title">卫生巡查区域：</view>
-        <view class="context">楼道</view>
-      </view>
-      <view class="text-item">
-        <view class="title">巡查寝室：</view>
-        <view class="context">401</view>
-      </view>
-      <view class="text-item">
-        <view class="title">被巡查人：</view>
-        <view class="context">张三</view>
-      </view>
-      <view class="text-item">
-        <view class="title">必要巡查区域：</view>
-        <view class="context">岗亭及指挥中心</view>
+      <view a:for="{{ cardList }}" class="text-item">
+        <view class="title">{{item.tagName}}：</view>
+        <view class="context">{{item.tagValue}}</view>
       </view>
     </view>
     <view a:if="{{ pageType === 1 }}" class="card" style="display:flex;justify-content:space-between">
-      <view class="icon-item" onTap="">
+      <view class="icon-item" onTap="resetRandom">
         <image mode="scaleToFill" src="../../assets/icon_cxsjsc@3x.png" />
         <view class="context">重新随机生成</view>
       </view>
