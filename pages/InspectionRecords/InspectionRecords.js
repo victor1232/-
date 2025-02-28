@@ -15,55 +15,62 @@ Page({
   },
   onLoad() {
     this.setData({ dateList: this.generateCalendarData(2025, 2) });
-    this.getRecordList()
   },
   setlist_show({ target: { dataset: { type } } }) { // 显示隐藏下拉框
     console.log(type)
     if (this.data.list_show === 0 || this.data.list_show === 1) return this.setData({ list_show: null })
     this.setData({ list_show: type })
   },
-  generateCalendarData(year, month) { // 生成日历数组
-    const daysInMonth = new Date(year, month, 0).getDate(); // 本月天数
-    const firstDayOfMonth = new Date(year, month - 1, 1).getDay(); // 本月第一天是星期几
-    const prevMonthDays = new Date(year, month - 2, 0).getDate(); // 上个月天数
-    let nextMonthDays = 0; // 下个月天数，初始化为0，后面根据需要计算
-    let calendarData = []; // 初始化结果数组
-    let lastarr = [];
-    // 填充上个月的日期
-    for (let i = firstDayOfMonth - 1; i >= 0; i--) {
-      calendarData.unshift({
-        year: year,
-        month: month - 1,
-        day: prevMonthDays - i,
-        isCurrentMonth: false
-      });
+  generateCalendarData(year, month) {
+    // 获取本月基础信息
+    const daysInMonth = new Date(year, month, 0).getDate();    // 本月总天数
+    const firstDayOfMonth = new Date(year, month - 1, 1).getDay(); // 首日星期（0=周日）
+    const prevMonthDays = new Date(year, month - 1, 0).getDate();  // 上月总天数
+    const calendarData = [];
+    const prependDays = firstDayOfMonth;
+    if (prependDays > 0) {
+      const prevMonthYear = month === 1 ? year - 1 : year;
+      const prevMonth = month === 1 ? 12 : month - 1;
+      const startDay = prevMonthDays - prependDays + 1;
+
+      // 按顺序添加上月最后几天（如28,29,30）
+      for (let day = startDay; day <= prevMonthDays; day++) {
+        calendarData.push({
+          year: prevMonthYear,
+          month: prevMonth,
+          day: day,
+          isCurrentMonth: false
+        });
+      }
     }
-    // 填充本月的日期
-    for (let i = 1; i <= daysInMonth && calendarData.length < 35; i++) {
+
+    for (let day = 1; day <= daysInMonth; day++) {
       calendarData.push({
         year: year,
         month: month,
-        day: i,
+        day: day,
         isCurrentMonth: true
       });
     }
-    // 如果还没凑满35条，继续填充下个月的日期
-    if (calendarData.length < 35) {
-      const nextMonth = new Date(year, month, 1);
-      nextMonth.setMonth(nextMonth.getMonth() + 1); // 切换到下个月
-      while (calendarData.length < 35) {
-        nextMonthDays++;
+
+    const totalWeeks = 6;  // 保证6周完整显示
+    const neededDays = totalWeeks * 7 - calendarData.length;
+
+    if (neededDays > 0) {
+      let currentDate = new Date(year, month, 1);  // 下个月第一天
+
+      for (let i = 0; i < neededDays; i++) {
         calendarData.push({
-          year: nextMonth.getFullYear(),
-          month: nextMonth.getMonth(), // 月份从0开始，所以要加1
-          day: nextMonthDays,
+          year: currentDate.getFullYear(),
+          month: currentDate.getMonth() + 1,  // 转换为1-based月份
+          day: currentDate.getDate(),
           isCurrentMonth: false
         });
-        nextMonth.setDate(nextMonth.getDate() + 1); // 日期递增
+        currentDate.setDate(currentDate.getDate() + 1);  // 自动处理跨月
       }
     }
-    calendarData = calendarData.slice(0, 35);
-    return calendarData;
+
+    return calendarData.slice(0, 42);  // 确保返回42天
   },
   selectDay({ target: { dataset: { i } } }) { // 选择日期
     const data = this.data.dateList.find((item, index) => index === i)
@@ -91,24 +98,5 @@ Page({
     console.log([year, month])
     this.setData({ now_year_month: [year, month] })
     this.setData({ dateList: this.generateCalendarData(this.data.now_year_month[0], this.data.now_year_month[1]) })
-  },
-  getRecordList() {
-    console.log(app.globalData.unionid)
-    dd.httpRequest({
-      url: 'http://123.157.97.116:8093/ks-inspection/sys/ksInspectionBackend/recording/query',
-      method: 'POST',
-      headers: {
-        unionid: app.globalData.unionid
-      },
-      data: {
-        content: "",
-        time: ""
-      },
-      success: (res) => {
-        const { data, status, headers } = res;
-        console.log(data)
-        // this.setData({ cardList: data.data })
-      },
-    })
   }
 });

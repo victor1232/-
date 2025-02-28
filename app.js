@@ -1,6 +1,7 @@
 App({
   globalData: {
-    unionid: null
+    unionid: null,
+    unit: null
   },
   eventBus: { // eventBus
     events: {},

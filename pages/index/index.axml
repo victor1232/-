@@ -2,7 +2,7 @@
   <view class="header">
     <view class="input-block">
       <text onTap="setlist_show">
-        {{select_value.text || "请选择单位"}}
+        {{select_value.unit || "请选择单位"}}
       </text>
       <view a:if="{{ list_show  }}" class="select-list">
         <view
@@ -12,13 +12,15 @@
           a:key="index"
           class="select-item"
         >
-          {{item.text}}
+          {{item.unit}}
         </view>
       </view>
+
     </view>
   </view>
   <view class="content">
     <view a:if="{{ pageType === 0 }}" class="card">
+      <ant-skeleton a:if="{{ !cardList.length }}" animate="{{true}}"></ant-skeleton>
       <view a:for="{{ cardList }}" class="text-item">
         <view class="title">{{item.tagName}}：</view>
         <view class="context">{{item.tagValue}}</view>

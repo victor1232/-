@@ -63,57 +63,92 @@
   </view>
   <view class="content">
     <scroll-view scroll-y="{{true}}" style="height: 100%;">
-      <view a:for="{{ 10 }}" class="card">
-
+      <view a:for="{{ viewList }}" class="card">
         <view class="card-title">
           <view class="card-title-text" style="width:70%">
-            卫生检查
-            <ant-tag color="danger" class="card-title-text-tag">随机</ant-tag>
+            {{item.content}}
+            <ant-tag color="danger" class="card-title-text-tag">
+              {{item.type == 0 ? "随机" : "全部"}}
+            </ant-tag>
           </view>
-          <ant-swipe-action
-            data-item="{{index}}"
-            rightButtons="{{leftBtns}}"
-            elasticity="{{true}}"
-            swiped="{{swipeIndex === index}}"
-            bindswipeend="onSwipeEnd"
-            bindswipestart="onSwipeStart"
-            bindbuttontap="onButtonTap"
-          >
-            <view class="card-title-time" onTap="aaa">
-              <image mode="scaleToFill" src="../../assets/icon_general／download@3x.png" />
-            </view>
-          </ant-swipe-action>
+          <view class="card-title-time">
+            <image mode="scaleToFill" src="../../assets/icon_general／download@3x.png" />
+          </view>
         </view>
-        <view class="card-context">
-          文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述
+        <view class="card-context" onTap="addContent" data-item="{{item}}">
+          <view a:for="{{ item.data }}">
+            {{index+1}}{{item}}
+          </view>
         </view>
       </view>
+      <view style="height: 17%;"></view>
     </scroll-view>
   </view>
   <view class="bottom-card">
-    <ant-button type="primary" danger>
+    <ant-button type="primary" onTap="addContent" danger>
       新增
     </ant-button>
   </view>
 
-  <ant-dialog title="新增巡查内容" visible="{{slotWeakVisible}}">
-    <view slot="content" class="activity-dialog-footer">
-      <view class="activity-dialog-content" bindtap="onClickActivityModalButton">
-        <ant-popover-list
-          placement="bottom-right"
-          visible="{{visible}}"
-          list="{{list}}"
-          onTapItem="handleTapItem"
-          style="padding-top: 20px;margin: 0 20px;background-color:#FFF"
-          bindvisiblechange="handleVisibleChange"
-        >
-          <ant-button onTap="handleVisibleChange" inline>点我</ant-button>
-        </ant-popover-list>
+  <ant-dialog title="设置巡查内容" visible="{{slotWeakVisible}}">
+    <view slot="content" class="activity-dialog-content">
+      <view class="form-item">
+        <view class="form-item-title">
+          巡查内容
+        </view>
+        <view class="form-item-computent">
+          <ant-input
+            controlled="{{false}}"
+            onChange="changeAddValue"
+            value="{{addObj.context}}"
+            placeholder="请输入巡查内容"
+          />
+        </view>
+      </view>
+      <view class="form-item">
+        <view class="form-item-title">
+          巡查类型
+        </view>
+        <view class="form-item-computent">
+          <ant-popover-list
+            placement="bottom-right"
+            visible="{{visible}}"
+            list="{{list}}"
+            onTapItem="handleTapItem"
+            bindvisiblechange="handleVisibleChange"
+          >
+            <button
+              size="default"
+              class="select-btn"
+              onTap="handleVisibleChange"
+              type="primary"
+            >
+              {{addObj.type !== null ? addObj.type.text : "选择输入类型"}}
+            </button>
+          </ant-popover-list>
+        </view>
+      </view>
+      <view a:for="{{ addObj.data }}" class="form-item">
+        <view class="form-item-computent" style="width:100%">
+          <ant-input
+            controlled="{{false}}"
+            onChange="updateValue"
+            value="{{item}}"
+            data-index="{{index}}"
+            placeholder="请输入内容"
+          />
+        </view>
+      </view>
+      <view class="form-item" style="justify-content:space-between">
+        <view onTap="addData" class="form-item-btn" style="background-color:rgba(25, 148, 255, 0.15);color:rgba(25, 148, 255, 1)">
+          <image style="height:18px;width:18px" mode="scaleToFill" src="../../assets/icon_tips／add@3x.png" />
+          新增数据
+        </view>
       </view>
     </view>
     <view slot="footer" class="activity-dialog-footer">
-      <ant-button type="primary" onTap="handleClose">取消</ant-button>
-      <ant-button type="primary" onTap="handleClose">保存</ant-button>
+      <ant-button type="primary" onTap="popupClose">取消</ant-button>
+      <ant-button type="primary" onTap="addsubmit">保存</ant-button>
     </view>
   </ant-dialog>
 </view>

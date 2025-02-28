@@ -6,12 +6,7 @@ Page({
     list_show: false,
     select_value: null,
     pageType: 0,
-    list: [
-      { id: 1, text: "柯山消防大队" },
-      { id: 2, text: "龙游消防大队" },
-      { id: 3, text: "衢江消防大队" },
-      { id: 4, text: "柯城消防大队" },
-    ],
+    list: [],
     cardList: []
   },
   // 生命周期
@@ -28,10 +23,14 @@ Page({
   onReady() {
     // 初始化首页 请求今日巡查
     app.eventBus.on('getUnionid', this.getUnionid());
+    app.eventBus.on('getUnionid', this.getUnitList());
   },
   onUnload() {
     // 页面被关闭
     app.eventBus.off('getUnionid');
+  },
+  onShow() {
+    this.getUnitList()
   },
   // 方法
   setlist_show() { // 开启/关闭单位选择列表
@@ -45,9 +44,13 @@ Page({
     console.log(e.target.dataset.data)
     const data = e.target.dataset.data
     this.setData({ select_value: data })
+    app.globalData.unit = data
     this.setlist_show()
+    console.log(app)
+
   },
   goPage({ target: { dataset: { page } } }) {
+    if (!app.globalData.unit) return dd.alert({ title: '请选择单位', buttonText: '确认' })
     dd.navigateTo({
       url: `/pages/${page}/${page}`  // url详解请见【路由使用须知】
     })
@@ -69,13 +72,29 @@ Page({
   },
   resetRandom() { // 重新生成今日巡查内容
     console.log("重新随机生成")
+    if (!app.globalData.unit) return dd.alert({ title: '请选择单位', buttonText: '确认' })
     dd.httpRequest({
       url: 'http://123.157.97.116:8093/ks-inspection/sys/ksInspectionTag/reGetTodayContent',
       method: 'GET',
+      data: {
+        unit: app.globalData.unit.unit
+      },
       success: (res) => {
         const { data, status, headers } = res;
         this.setData({ cardList: data.data })
       },
     })
   },
+  getUnitList() {
+    return ({ data }) => {
+      dd.httpRequest({
+        url: "http://123.157.97.116:8093/ks-inspection/sys/ksInspectionTag/getUnit",
+        headers: { unionid: data },
+        success: (res) => {
+          console.log(res, this)
+          this.setData({ list: res.data.data })
+        }
+      })
+    }
+  }
 });

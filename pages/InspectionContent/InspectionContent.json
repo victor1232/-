@@ -6,6 +6,8 @@
     "ant-tag": "antd-mini/es/Tag/index",
     "ant-swipe-action": "antd-mini/es/SwipeAction/index",
     "ant-dialog": "antd-mini/es/Dialog/index",
-    "ant-popover-list": "antd-mini/es/PopoverList/index"
+    "ant-popover-list": "antd-mini/es/PopoverList/index",
+    "ant-input": "antd-mini/es/Input/index",
+    "ant-safe-area": "antd-mini/es/SafeArea/index"
   }
 }
